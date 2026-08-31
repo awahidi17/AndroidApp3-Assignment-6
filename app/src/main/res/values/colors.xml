@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="navy">#0B1535</color>
+    <color name="purple">#6246EA</color>
+    <color name="purple_dark">#4329C8</color>
+    <color name="purple_soft">#EAE7FF</color>
+    <color name="purple_light_text">#E0DBFF</color>
+    <color name="aqua">#2DE2C4</color>
+    <color name="aqua_soft">#D7FBF5</color>
+    <color name="coral">#FF5E78</color>
+    <color name="coral_dark">#C62E4B</color>
+    <color name="coral_soft">#FFE4E9</color>
+    <color name="gold">#FFC857</color>
+    <color name="background_light">#F7F7FF</color>
+    <color name="text_primary">#1A2140</color>
+    <color name="text_secondary">#5F6478</color>
+    <color name="text_muted">#8E93A7</color>
+    <color name="locked_soft">#ECEEF4</color>
+</resources>

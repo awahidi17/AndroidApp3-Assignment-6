@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_map"
+            android:icon="@android:drawable/ic_dialog_map"
+            android:title="@string/nav_treasure_map" />
+        <item
+            android:id="@+id/nav_places"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="@string/nav_all_stops" />
+        <item
+            android:id="@+id/nav_how_to_play"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="@string/nav_how_to_play" />
+    </group>
+    <item
+        android:id="@+id/nav_reset"
+        android:icon="@android:drawable/ic_menu_revert"
+        android:title="@string/nav_reset" />
+</menu>

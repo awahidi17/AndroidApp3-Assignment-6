@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Windsor Quest</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="live_mission">● LIVE TREASURE MISSION</string>
+    <string name="windsor_quest">WINDSOR QUEST</string>
+    <string name="windsor_quest_upper">WINDSOR ANNIVERSARY QUEST</string>
+    <string name="treasure_hunt">Treasure Hunt</string>
+    <string name="created_by_ahmad">Created by Ahmad Wahidi</string>
+    <string name="map_symbol">⌖</string>
+
+    <string name="progress_format">Progress  %1$d / %2$d</string>
+    <string name="progress_placeholder">Progress  0 / 20</string>
+    <string name="current_stop_format">Stop #%1$d  ·  %2$s</string>
+    <string name="marker_title">#%1$d %2$s</string>
+    <string name="current_stop">Current stop</string>
+    <string name="clue_placeholder">Your next clue will appear here.</string>
+    <string name="details">View Details</string>
+    <string name="mark_visited">Mark Visited</string>
+    <string name="mark_as_visited">Mark as Visited</string>
+    <string name="view_all_stops">Explore All Hunt Stops</string>
+    <string name="how_to_play">How to Play</string>
+
+    <string name="confirm_visit_title">Confirm Your Visit</string>
+    <string name="confirm_visit_message">Mark %1$s as visited and unlock the next clue?</string>
+    <string name="stop_completed">%1$s completed!</string>
+    <string name="cancel">Cancel</string>
+    <string name="awesome">Awesome!</string>
+    <string name="location_permission_denied">Location access was not granted. You can still use the hunt map manually.</string>
+
+    <string name="hunt_complete">All 20 Stops Complete!</string>
+    <string name="complete_dialog_title">Windsor Quest Complete!</string>
+    <string name="completion_message">Congratulations! You completed all 20 Windsor stops and are now eligible to enter the vacation draw.</string>
+    <string name="how_to_play_title">How to Play</string>
+    <string name="how_to_play_message">1. Begin at Windsor City Hall.\n\n2. Read the clue and visit the current stop.\n\n3. Mark it as visited to unlock the next business.\n\n4. Add a note or photo to remember each stop.\n\n5. Complete all 20 stops to qualify for the vacation draw.</string>
+    <string name="got_it">Got it</string>
+    <string name="reset_title">Reset Windsor Quest?</string>
+    <string name="reset_message">This clears visited status, personal notes, and saved photos for all 20 stops.</string>
+    <string name="reset">Reset</string>
+    <string name="progress_reset">Treasure-hunt progress reset.</string>
+
+    <string name="all_hunt_stops">All Hunt Stops</string>
+    <string name="route_progress">YOUR ROUTE PROGRESS</string>
+    <string name="stops_summary">%1$d of %2$d stops completed</string>
+    <string name="stops_summary_placeholder">0 of 20 stops completed</string>
+    <string name="unlock_hint">Finish the current stop to reveal the next mystery business.</string>
+    <string name="back_to_map">← Back to Treasure Map</string>
+    <string name="back_to_stops">← Back</string>
+    <string name="stop_number_short">#%1$d</string>
+    <string name="stop_one_short">#1</string>
+    <string name="visited">VISITED</string>
+    <string name="current">CURRENT</string>
+    <string name="locked">LOCKED</string>
+    <string name="mystery_stop">Mystery Stop</string>
+    <string name="locked_stop_message">Complete the previous stop to unlock this location.</string>
+    <string name="locked_clue_message">This clue is still locked. Keep exploring!</string>
+
+    <string name="stop_of_total">Stop #%1$d of %2$d</string>
+    <string name="stop_one_of_twenty">Stop #1 of 20</string>
+    <string name="address_placeholder">Windsor, Ontario</string>
+    <string name="your_clue">YOUR CLUE</string>
+    <string name="my_visit_notes">My Visit Notes</string>
+    <string name="notes_hint">Write a short note about this stop</string>
+    <string name="save_notes">Save Notes</string>
+    <string name="notes_saved">Notes saved.</string>
+    <string name="place_photo">Place Photo</string>
+    <string name="choose_photo">Choose a Photo</string>
+    <string name="photo_saved">Photo saved with this stop.</string>
+    <string name="already_visited">Already Visited</string>
+    <string name="locked_status">Locked — finish the previous stop first</string>
+    <string name="open_in_maps">Open in Maps</string>
+    <string name="no_map_app">No compatible map application was found.</string>
+
+    <string name="nav_treasure_map">Treasure Map</string>
+    <string name="nav_all_stops">All Hunt Stops</string>
+    <string name="nav_how_to_play">How to Play</string>
+    <string name="nav_reset">Reset Progress</string>
+</resources>
