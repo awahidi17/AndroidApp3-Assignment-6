@@ -1,8 +1,11 @@
 package com.ahmadwahidi.androidapp3
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -24,8 +27,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 /** Main map screen for the sequential Windsor treasure hunt. */
 class MainActivity : AppCompatActivity(),
@@ -34,11 +41,13 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var repository: TreasureRepository
+    private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var map: GoogleMap
     private var currentPlace: TreasurePlace? = null
     private var completionDialogShown = false
+    private var verifyVisitAfterPermission = false
 
-    // The app works without location access, but the blue user-location layer needs permission.
+    // The map remains browsable without permission; completing a stop requires a live location.
     private val locationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
             val granted = result[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
@@ -46,7 +55,13 @@ class MainActivity : AppCompatActivity(),
 
             if (granted) {
                 enableMyLocation()
+                if (verifyVisitAfterPermission) {
+                    verifyVisitAfterPermission = false
+                    verifyCurrentVisit()
+                }
             } else {
+                verifyVisitAfterPermission = false
+                restoreVisitButton()
                 Toast.makeText(this, R.string.location_permission_denied, Toast.LENGTH_LONG).show()
             }
         }
@@ -74,12 +89,13 @@ class MainActivity : AppCompatActivity(),
         repository = TreasureRepository(
             AppDatabase.getDatabase(applicationContext).treasurePlaceDao()
         )
+        locationClient = LocationServices.getFusedLocationProviderClient(this)
 
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        binding.markVisitedButton.setOnClickListener { confirmCurrentVisit() }
+        binding.markVisitedButton.setOnClickListener { verifyCurrentVisit() }
         binding.viewDetailsButton.setOnClickListener {
             currentPlace?.let { openPlaceDetails(it.id) }
         }
@@ -87,6 +103,7 @@ class MainActivity : AppCompatActivity(),
             startActivity(Intent(this, PlacesActivity::class.java))
         }
         binding.howToPlayButton.setOnClickListener { showHowToPlay() }
+        binding.shareProgressButton.setOnClickListener { shareProgress() }
 
         lifecycleScope.launch {
             repository.seedDatabaseIfNeeded()
@@ -107,10 +124,11 @@ class MainActivity : AppCompatActivity(),
         map.uiSettings.isCompassEnabled = true
         map.uiSettings.isMapToolbarEnabled = true
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.vibrant_map_style))
+        map.setInfoWindowAdapter(TreasureInfoWindowAdapter(this))
 
         // Tapping a marker's information window opens that unlocked stop.
         map.setOnInfoWindowClickListener { marker ->
-            (marker.tag as? Int)?.let { openPlaceDetails(it) }
+            (marker.tag as? TreasurePlace)?.let { openPlaceDetails(it.id) }
         }
 
         requestLocationPermissionIfNeeded()
@@ -138,6 +156,7 @@ class MainActivity : AppCompatActivity(),
                 getString(R.string.current_stop_format, nextPlace.huntOrder, nextPlace.name)
             binding.clueText.text = nextPlace.clue
             binding.markVisitedButton.isEnabled = true
+            binding.markVisitedButton.setText(R.string.verify_visit)
             binding.viewDetailsButton.isEnabled = true
 
             if (::map.isInitialized) drawAvailableMarkers(allPlaces, nextPlace)
@@ -162,7 +181,7 @@ class MainActivity : AppCompatActivity(),
                     .snippet(place.address)
                     .icon(BitmapDescriptorFactory.defaultMarker(hue))
             )
-            marker?.tag = place.id
+            marker?.tag = place
         }
 
         map.animateCamera(
@@ -173,12 +192,74 @@ class MainActivity : AppCompatActivity(),
         )
     }
 
-    /** Confirms the visit, saves it in Room, and unlocks the next stop. */
-    private fun confirmCurrentVisit() {
+    /** Requests a fresh device position before allowing the current stop to be completed. */
+    private fun verifyCurrentVisit() {
         val place = currentPlace ?: return
+        if (!hasLocationPermission()) {
+            verifyVisitAfterPermission = true
+            requestLocationPermissionIfNeeded()
+            return
+        }
+
+        binding.markVisitedButton.isEnabled = false
+        binding.markVisitedButton.setText(R.string.checking_location)
+
+        try {
+            locationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener(this) { location ->
+                    if (location != null) {
+                        evaluateVisitLocation(place, location)
+                    } else {
+                        // A cached position is a useful fallback when a fresh GPS fix is unavailable.
+                        locationClient.lastLocation
+                            .addOnSuccessListener(this) { lastLocation ->
+                                if (lastLocation == null) showLocationUnavailable()
+                                else evaluateVisitLocation(place, lastLocation)
+                            }
+                            .addOnFailureListener(this) { showLocationUnavailable() }
+                    }
+                }
+                .addOnFailureListener(this) { showLocationUnavailable() }
+        } catch (_: SecurityException) {
+            showLocationUnavailable()
+        }
+    }
+
+    private fun evaluateVisitLocation(place: TreasurePlace, location: Location) {
+        if (currentPlace?.id != place.id) return
+
+        val distance = LocationTools.distanceMeters(
+            location.latitude,
+            location.longitude,
+            place.latitude,
+            place.longitude
+        )
+        val distanceLabel = formatDistance(distance)
+        restoreVisitButton()
+
+        if (LocationTools.isWithinVisitRadius(distance)) {
+            confirmVerifiedVisit(place, distanceLabel)
+        } else {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.move_closer_title)
+                .setMessage(
+                    getString(
+                        R.string.move_closer_message,
+                        distanceLabel,
+                        LocationTools.VISIT_RADIUS_METERS.roundToInt()
+                    )
+                )
+                .setPositiveButton(R.string.open_in_maps) { _, _ -> openInMaps(place) }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+    }
+
+    /** Saves only a proximity-verified visit and then reveals the next location. */
+    private fun confirmVerifiedVisit(place: TreasurePlace, distanceLabel: String) {
         AlertDialog.Builder(this)
             .setTitle(R.string.confirm_visit_title)
-            .setMessage(getString(R.string.confirm_visit_message, place.name))
+            .setMessage(getString(R.string.confirm_verified_visit_message, place.name, distanceLabel))
             .setPositiveButton(R.string.mark_visited) { _, _ ->
                 lifecycleScope.launch {
                     repository.markVisited(place.id)
@@ -194,10 +275,23 @@ class MainActivity : AppCompatActivity(),
             .show()
     }
 
+    private fun showLocationUnavailable() {
+        restoreVisitButton()
+        Toast.makeText(this, R.string.location_unavailable, Toast.LENGTH_LONG).show()
+    }
+
+    private fun restoreVisitButton() {
+        if (currentPlace != null) {
+            binding.markVisitedButton.isEnabled = true
+            binding.markVisitedButton.setText(R.string.verify_visit)
+        }
+    }
+
     private fun showCompletedState() {
         binding.currentStopText.setText(R.string.hunt_complete)
         binding.clueText.setText(R.string.completion_message)
         binding.markVisitedButton.isEnabled = false
+        binding.markVisitedButton.setText(R.string.hunt_complete_button)
         binding.viewDetailsButton.isEnabled = false
         if (::map.isInitialized) map.clear()
 
@@ -206,7 +300,8 @@ class MainActivity : AppCompatActivity(),
             AlertDialog.Builder(this)
                 .setTitle(R.string.complete_dialog_title)
                 .setMessage(R.string.completion_message)
-                .setPositiveButton(R.string.awesome, null)
+                .setPositiveButton(R.string.share_completion) { _, _ -> shareProgress() }
+                .setNegativeButton(R.string.done, null)
                 .show()
         }
     }
@@ -219,16 +314,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun requestLocationPermissionIfNeeded() {
-        val fineGranted = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        val coarseGranted = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-
-        if (fineGranted || coarseGranted) {
+        if (hasLocationPermission()) {
             enableMyLocation()
         } else {
             locationPermissionLauncher.launch(
@@ -240,17 +326,21 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun enableMyLocation() {
-        if (!::map.isInitialized) return
-        val hasPermission = ContextCompat.checkSelfPermission(
+    private fun hasLocationPermission(): Boolean {
+        val fineGranted = ContextCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+        ) == PackageManager.PERMISSION_GRANTED
+        val coarseGranted = ContextCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
+        return fineGranted || coarseGranted
+    }
 
-        if (hasPermission) {
+    private fun enableMyLocation() {
+        if (!::map.isInitialized) return
+        if (hasLocationPermission()) {
             map.isMyLocationEnabled = true
             map.uiSettings.isMyLocationButtonEnabled = true
         }
@@ -261,6 +351,7 @@ class MainActivity : AppCompatActivity(),
             R.id.nav_map -> Unit
             R.id.nav_places -> startActivity(Intent(this, PlacesActivity::class.java))
             R.id.nav_how_to_play -> showHowToPlay()
+            R.id.nav_share -> shareProgress()
             R.id.nav_reset -> confirmReset()
         }
         binding.drawerLayout.closeDrawers()
@@ -274,6 +365,41 @@ class MainActivity : AppCompatActivity(),
             .setPositiveButton(R.string.got_it, null)
             .show()
     }
+
+    /** Shares a plain-text progress card without exposing locked business names. */
+    private fun shareProgress() {
+        lifecycleScope.launch {
+            val visitedCount = repository.getVisitedCount()
+            val message = if (visitedCount == TOTAL_STOPS) {
+                getString(R.string.share_complete_text)
+            } else {
+                getString(R.string.share_progress_text, visitedCount, TOTAL_STOPS)
+            }
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_subject))
+                putExtra(Intent.EXTRA_TEXT, message)
+            }
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_chooser)))
+        }
+    }
+
+    private fun openInMaps(place: TreasurePlace) {
+        val query = Uri.encode("${place.latitude},${place.longitude}(${place.name})")
+        val uri = Uri.parse("geo:${place.latitude},${place.longitude}?q=$query")
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        } catch (_: ActivityNotFoundException) {
+            Toast.makeText(this, R.string.no_map_app, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun formatDistance(distanceMeters: Double): String =
+        if (distanceMeters < 1_000) {
+            getString(R.string.distance_metres, distanceMeters.roundToInt())
+        } else {
+            getString(R.string.distance_kilometres, distanceMeters / 1_000.0)
+        }
 
     private fun confirmReset() {
         AlertDialog.Builder(this)

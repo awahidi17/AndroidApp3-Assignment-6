@@ -69,6 +69,29 @@
         android:textAllCaps="false"
         android:textColor="@color/purple" />
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/map_info_background"
+        app:iconifiedByDefault="false"
+        app:queryHint="@string/search_unlocked_stops" />
+
+    <TextView
+        android:id="@+id/emptySearchText"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="28dp"
+        android:text="@string/no_matching_stops"
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/placesRecyclerView"
         android:layout_width="match_parent"

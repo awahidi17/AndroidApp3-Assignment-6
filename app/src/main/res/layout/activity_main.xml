@@ -180,6 +180,18 @@
                     app:cornerRadius="14dp" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/shareProgressButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/share_progress"
+                    android:textAllCaps="false"
+                    android:textColor="@color/purple"
+                    app:cornerRadius="14dp"
+                    app:strokeColor="@color/purple" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/howToPlayButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Only app-created treasure photos are shared temporarily with the camera app. -->
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path
+        name="treasure_photos"
+        path="treasure_photos/" />
+</paths>

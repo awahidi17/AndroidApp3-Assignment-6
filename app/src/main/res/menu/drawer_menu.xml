@@ -13,6 +13,10 @@
             android:id="@+id/nav_how_to_play"
             android:icon="@android:drawable/ic_menu_help"
             android:title="@string/nav_how_to_play" />
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@android:drawable/ic_menu_share"
+            android:title="@string/nav_share_progress" />
     </group>
     <item
         android:id="@+id/nav_reset"

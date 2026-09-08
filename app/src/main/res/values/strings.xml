@@ -20,21 +20,34 @@
     <string name="details">View Details</string>
     <string name="mark_visited">Mark Visited</string>
     <string name="mark_as_visited">Mark as Visited</string>
+    <string name="verify_visit">Verify Location &amp; Complete</string>
+    <string name="checking_location">Checking Location…</string>
+    <string name="hunt_complete_button">Quest Complete</string>
     <string name="view_all_stops">Explore All Hunt Stops</string>
     <string name="how_to_play">How to Play</string>
+    <string name="share_progress">Share My Progress</string>
 
     <string name="confirm_visit_title">Confirm Your Visit</string>
     <string name="confirm_visit_message">Mark %1$s as visited and unlock the next clue?</string>
+    <string name="confirm_verified_visit_message">You are %2$s from %1$s. Complete this stop and unlock the next clue?</string>
     <string name="stop_completed">%1$s completed!</string>
     <string name="cancel">Cancel</string>
     <string name="awesome">Awesome!</string>
-    <string name="location_permission_denied">Location access was not granted. You can still use the hunt map manually.</string>
+    <string name="location_permission_denied">Location access was not granted. You can explore the map, but location access is required to verify a visit.</string>
+    <string name="location_required_for_visit">Allow location access to check your distance and complete this stop.</string>
+    <string name="location_unavailable">Your location is temporarily unavailable. Turn on device location and try again.</string>
+    <string name="move_closer_title">You’re Not at This Stop Yet</string>
+    <string name="move_closer_message">You are currently %1$s away. Move within %2$d metres of the business, then check again.</string>
+    <string name="distance_metres">%1$d m</string>
+    <string name="distance_kilometres">%1$.1f km</string>
 
     <string name="hunt_complete">All 20 Stops Complete!</string>
     <string name="complete_dialog_title">Windsor Quest Complete!</string>
     <string name="completion_message">Congratulations! You completed all 20 Windsor stops and are now eligible to enter the vacation draw.</string>
+    <string name="share_completion">Share Completion</string>
+    <string name="done">Done</string>
     <string name="how_to_play_title">How to Play</string>
-    <string name="how_to_play_message">1. Begin at Windsor City Hall.\n\n2. Read the clue and visit the current stop.\n\n3. Mark it as visited to unlock the next business.\n\n4. Add a note or photo to remember each stop.\n\n5. Complete all 20 stops to qualify for the vacation draw.</string>
+    <string name="how_to_play_message">1. Begin at Windsor City Hall.\n\n2. Read the clue and travel to the current stop.\n\n3. Move within 250 metres and verify your location.\n\n4. Add a note or take a photo to remember each stop.\n\n5. Complete all 20 stops to qualify for the vacation draw.</string>
     <string name="got_it">Got it</string>
     <string name="reset_title">Reset Windsor Quest?</string>
     <string name="reset_message">This clears visited status, personal notes, and saved photos for all 20 stops.</string>
@@ -46,6 +59,8 @@
     <string name="stops_summary">%1$d of %2$d stops completed</string>
     <string name="stops_summary_placeholder">0 of 20 stops completed</string>
     <string name="unlock_hint">Finish the current stop to reveal the next mystery business.</string>
+    <string name="search_unlocked_stops">Search unlocked stops</string>
+    <string name="no_matching_stops">No unlocked stops match this search.</string>
     <string name="back_to_map">← Back to Treasure Map</string>
     <string name="back_to_stops">← Back</string>
     <string name="stop_number_short">#%1$d</string>
@@ -68,13 +83,40 @@
     <string name="place_photo">Place Photo</string>
     <string name="choose_photo">Choose a Photo</string>
     <string name="photo_saved">Photo saved with this stop.</string>
+    <string name="photo_removed">Photo removed from this stop.</string>
+    <string name="photo_help">Take a new photo at the stop or choose one already on your device.</string>
+    <string name="add_change_photo">Add or Change Photo</string>
+    <string name="take_photo">Take a New Photo</string>
+    <string name="choose_from_device">Choose from Device</string>
+    <string name="remove_photo">Remove Current Photo</string>
+    <string name="no_camera_app">No compatible camera application was found.</string>
+    <string name="photo_file_error">The app could not create a photo file. Please try again.</string>
     <string name="already_visited">Already Visited</string>
     <string name="locked_status">Locked — finish the previous stop first</string>
     <string name="open_in_maps">Open in Maps</string>
     <string name="no_map_app">No compatible map application was found.</string>
+    <string name="info_stop">STOP #%1$d</string>
+    <string name="info_stop_placeholder">STOP #1</string>
+    <string name="info_current_action">Tap this card to view the clue and details</string>
+    <string name="info_visited_action">Visited — tap to view your saved memory</string>
+
+    <string name="location_check">LIVE LOCATION CHECK</string>
+    <string name="check_my_distance">Check My Distance</string>
+    <string name="distance_ready">Check your live distance when you arrive at this stop.</string>
+    <string name="checking_location_detail">Finding your current location…</string>
+    <string name="distance_arrived">You are %1$s away — you have arrived!</string>
+    <string name="distance_away">You are %1$s away — keep going.</string>
+    <string name="distance_locked">Complete the previous stop before checking this location.</string>
+    <string name="visit_already_verified">This stop has been completed and saved.</string>
+
+    <string name="share_subject">Windsor Quest Progress</string>
+    <string name="share_progress_text">I have completed %1$d of %2$d stops in the Windsor Anniversary Treasure Hunt!</string>
+    <string name="share_complete_text">I completed all 20 stops in the Windsor Anniversary Treasure Hunt and qualified for the vacation draw!</string>
+    <string name="share_chooser">Share Windsor Quest progress</string>
 
     <string name="nav_treasure_map">Treasure Map</string>
     <string name="nav_all_stops">All Hunt Stops</string>
     <string name="nav_how_to_play">How to Play</string>
+    <string name="nav_share_progress">Share Progress</string>
     <string name="nav_reset">Reset Progress</string>
 </resources>

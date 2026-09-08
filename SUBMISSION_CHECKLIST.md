@@ -1,5 +1,6 @@
 # Submission Checklist
 
+- [ ] Confirm the README identifies MWD3B Assignment 6.
 - [ ] Open `AndroidApp3` in Android Studio.
 - [ ] Let Gradle sync completely.
 - [ ] Add `MAPS_API_KEY=...` to `local.properties`.
@@ -7,13 +8,18 @@
 - [ ] Run the app on an emulator or Android device.
 - [ ] Accept location permission.
 - [ ] Confirm Windsor City Hall is Stop #1.
-- [ ] Mark Stop #1 visited and confirm Stop #2 unlocks.
+- [ ] Set the emulator location to Windsor City Hall and check the displayed distance.
+- [ ] Verify Stop #1 and confirm Stop #2 unlocks.
 - [ ] Open All Hunt Stops and confirm future businesses are hidden.
+- [ ] Search for an unlocked stop and confirm locked names remain hidden.
+- [ ] Tap a map marker and confirm the custom information card opens.
 - [ ] Save a personal note on a stop.
-- [ ] Choose a place photo and reopen the detail screen.
+- [ ] Take a camera photo and confirm it remains on the detail screen.
+- [ ] Choose a gallery photo and test Remove Current Photo.
 - [ ] Confirm Open in Maps launches a map application.
+- [ ] Test Share My Progress.
 - [ ] Close and reopen the app to confirm progress remains saved.
 - [ ] Test Reset Progress.
-- [ ] Review `AIReflection.md` and adjust the wording to match your experience.
+- [ ] Run the unit tests for the 20-stop route and distance calculation.
 - [ ] Push the latest commit to `AndroidApp3` on GitHub.
 - [ ] Send the repository link to the instructor.
