@@ -75,9 +75,7 @@ Open the emulator controls, select **Location**, and enter the latitude and long
 ## GitHub
 
 The configured repository is:
+https://github.com/awahidi17/AndroidApp3-Assignment-6
 
-`https://github.com/awahidi17/AndroidApp3.git`
 
-## Author
 
-**Ahmad Wahidi**
